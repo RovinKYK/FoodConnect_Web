@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { foodAPI } from '../api/api';
+import api from '../api/api';
 import FoodCard from '../components/FoodCard';
 import './Home.css';
 
@@ -24,7 +24,7 @@ const Home = () => {
       if (searchTerm) params.search = searchTerm;
       if (townFilter) params.town = townFilter;
       
-      const response = await foodAPI.getAllFoods(params);
+      const response = await api.get('/food', { params });
       setFoods(response.data.food_items || []);
     } catch (error) {
       console.error('Error fetching foods:', error);
