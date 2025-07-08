@@ -1,8 +1,7 @@
 import axios from 'axios';
-import config from '../config.json';
 
-// Create axios instance with base configuration
-const API_BASE_URL = config.API_URL || 'http://localhost:5001/api';
+// Get API base URL from runtime config.js (mounted at /public/config.js by Choreo)
+const API_BASE_URL = (window.configs && window.configs.apiUrl) || 'http://localhost:5001/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
