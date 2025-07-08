@@ -1,0 +1,37 @@
+.add-food-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.add-food-content {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.add-food-content h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.add-food-content p {
+  color: #666;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.add-food-content ul {
+  text-align: left;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.add-food-content li {
+  color: #555;
+  margin-bottom: 8px;
+  font-size: 1rem;
+} 

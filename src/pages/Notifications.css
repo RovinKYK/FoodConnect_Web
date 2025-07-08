@@ -1,0 +1,37 @@
+.notifications-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.notifications-content {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.notifications-content h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.notifications-content p {
+  color: #666;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.notifications-content ul {
+  text-align: left;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.notifications-content li {
+  color: #555;
+  margin-bottom: 8px;
+  font-size: 1rem;
+} 

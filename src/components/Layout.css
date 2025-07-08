@@ -1,0 +1,276 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background: #2c3e50;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #34495e;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.close-sidebar {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-info {
+  padding: 20px;
+  border-bottom: 1px solid #34495e;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  background: #3498db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  margin: 0 0 5px 0;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.user-email {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #bdc3c7;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 20px 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  gap: 15px;
+}
+
+.nav-item:hover {
+  background: #34495e;
+}
+
+.nav-item.active {
+  background: #3498db;
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  width: 20px;
+  text-align: center;
+}
+
+.nav-label {
+  font-weight: 500;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid #34495e;
+}
+
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  gap: 15px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  margin-left: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-header {
+  background: white;
+  border-bottom: 1px solid #e1e5e9;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-content h1 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.add-food-btn {
+  background: #28a745;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.add-food-btn:hover {
+  background: #218838;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background: #f8f9fa;
+}
+
+/* Mobile menu button */
+.mobile-menu-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: #2c3e50;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: none;
+}
+
+/* Sidebar overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Responsive design */
+@media (min-width: 768px) {
+  .sidebar {
+    transform: translateX(0);
+    position: relative;
+  }
+  
+  .main-content {
+    margin-left: 280px;
+  }
+  
+  .mobile-menu-btn {
+    display: none;
+  }
+  
+  .sidebar-overlay {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .sidebar-overlay {
+    display: block;
+  }
+  
+  .header-content {
+    padding: 0 20px;
+  }
+  
+  .header-content h1 {
+    font-size: 1.5rem;
+  }
+  
+  .add-food-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+} 
