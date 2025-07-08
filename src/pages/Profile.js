@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Profile.css';
@@ -13,8 +13,19 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const { updateProfile, error, clearError } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        first_name: user.given_name || '',
+        last_name: user.family_name || '',
+        address: '',
+        phone_number: ''
+      });
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,7 +70,6 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    clearError();
 
     if (!validateForm()) {
       return;
@@ -68,7 +78,8 @@ const Profile = () => {
     setLoading(true);
 
     try {
-      await updateProfile(formData);
+      // Placeholder for profile update logic
+      console.log('Profile updated:', formData);
       navigate('/');
     } catch (error) {
       console.error('Profile update error:', error);
@@ -84,12 +95,6 @@ const Profile = () => {
           <h1>Complete Your Profile</h1>
           <p>Please provide your personal information to continue</p>
         </div>
-
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="profile-form">
           <div className="form-row">

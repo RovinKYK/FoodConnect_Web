@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Layout.css';
+import Cookies from 'js-cookie';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -40,16 +41,13 @@ const Layout = ({ children }) => {
 
         <div className="user-info">
           <div className="user-avatar">
-            {user?.first_name?.charAt(0) || 'U'}
+            {user?.name?.charAt(0) || user?.email?.charAt(0) || 'U'}
           </div>
           <div className="user-details">
             <p className="user-name">
-              {user?.first_name && user?.last_name 
-                ? `${user.first_name} ${user.last_name}`
-                : 'User'
-              }
+              {user?.name || 'User'}
             </p>
-            <p className="user-email">{user?.email || 'user@example.com'}</p>
+            <p className="user-email">{user?.email || ''}</p>
           </div>
         </div>
 
@@ -68,7 +66,7 @@ const Layout = ({ children }) => {
         </nav>
 
         <div className="sidebar-footer">
-          <button className="logout-btn" onClick={handleLogout}>
+          <button className="logout-btn" onClick={logout}>
             <span className="nav-icon">🚪</span>
             <span className="nav-label">Logout</span>
           </button>
