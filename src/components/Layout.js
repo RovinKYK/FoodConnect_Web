@@ -41,13 +41,16 @@ const Layout = ({ children }) => {
 
         <div className="user-info">
           <div className="user-avatar">
-            {user?.name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+            {user?.first_name?.charAt(0) || user?.given_name?.charAt(0) || user?.name?.charAt(0) || user?.email?.charAt(0) || 'U'}
           </div>
           <div className="user-details">
             <p className="user-name">
-              {user?.name || 'User'}
+              {user?.first_name || user?.given_name || user?.name || 'User'}
             </p>
             <p className="user-email">{user?.email || ''}</p>
+            <Link to="/edit-profile" className="edit-profile-btn" onClick={() => setSidebarOpen(false)}>
+              Edit Profile
+            </Link>
           </div>
         </div>
 

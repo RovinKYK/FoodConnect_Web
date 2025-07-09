@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../api/api';
 import './Profile.css';
 
 const Profile = () => {
@@ -12,18 +13,37 @@ const Profile = () => {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState(false);
 
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, updateProfileComplete, setFullUserData } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      setFormData({
-        first_name: user.given_name || '',
-        last_name: user.family_name || '',
-        address: '',
-        phone_number: ''
-      });
+      // Load existing profile data if available
+      const loadProfileData = async () => {
+        try {
+          const response = await api.get('/user/profile');
+          const userProfile = response.data.user;
+          setFormData({
+            first_name: userProfile.first_name || user.given_name || '',
+            last_name: userProfile.last_name || user.family_name || '',
+            address: userProfile.address || '',
+            phone_number: userProfile.phone_number || ''
+          });
+        } catch (error) {
+          console.error('Load profile error:', error);
+          // Fallback to basic user data
+          setFormData({
+            first_name: user.given_name || '',
+            last_name: user.family_name || '',
+            address: '',
+            phone_number: ''
+          });
+        }
+      };
+      
+      loadProfileData();
     }
   }, [user]);
 
@@ -78,25 +98,60 @@ const Profile = () => {
     setLoading(true);
 
     try {
-      // Placeholder for profile update logic
-      console.log('Profile updated:', formData);
-      navigate('/');
+      const response = await api.post('/user/profile', formData);
+      
+      if (response.data.message === 'Profile updated successfully') {
+        updateProfileComplete(true);
+        setSuccess(true);
+        
+        // Update the user data in AuthContext with the new profile data
+        setFullUserData({
+          ...user,
+          ...formData
+        });
+        
+        // Only redirect to home if this was a new user completing their profile
+        // For existing users editing profile, stay on the page
+        if (!user.first_name && !user.last_name) {
+          setTimeout(() => navigate('/'), 2000);
+        }
+      }
     } catch (error) {
       console.error('Profile update error:', error);
+      if (error.response?.data?.details) {
+        const apiErrors = {};
+        error.response.data.details.forEach(detail => {
+          apiErrors[detail.path] = detail.msg;
+        });
+        setErrors(apiErrors);
+      } else {
+        setErrors({ general: error.response?.data?.error || 'Failed to update profile' });
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  if (authLoading) {
+    return <div className="loading">Loading...</div>;
+  }
+
   return (
     <div className="profile-container">
       <div className="profile-card">
         <div className="profile-header">
-          <h1>Complete Your Profile</h1>
-          <p>Please provide your personal information to continue</p>
+          <h1>Profile Information</h1>
+          <p>Update your personal information</p>
         </div>
 
         <form onSubmit={handleSubmit} className="profile-form">
+          {success && (
+            <div className="success-message">Profile updated successfully!</div>
+          )}
+          {errors.general && (
+            <div className="error-message">{errors.general}</div>
+          )}
+          
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="first_name">First Name *</label>
@@ -169,7 +224,7 @@ const Profile = () => {
               className="save-btn"
               disabled={loading}
             >
-              {loading ? 'Saving...' : 'Save Profile'}
+              {loading ? 'Saving...' : 'Update Profile'}
             </button>
           </div>
         </form>

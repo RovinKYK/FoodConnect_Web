@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Home from './pages/Home';
 import AddFood from './pages/AddFood';
+import EditFood from './pages/EditFood';
 import FoodDetails from './pages/FoodDetails';
 import MyFoods from './pages/MyFoods';
 import Notifications from './pages/Notifications';
@@ -13,27 +14,70 @@ import './App.css';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, profileComplete } = useAuth();
   
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
   
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  
+  // If user is authenticated but profile is not complete, redirect to profile
+  if (!profileComplete) {
+    return <Navigate to="/profile" />;
+  }
+  
+  return children;
+};
+
+// Profile Route Component (only accessible if authenticated but profile incomplete)
+const ProfileRoute = ({ children }) => {
+  const { isAuthenticated, loading, profileComplete } = useAuth();
+  
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  
+  // If profile is complete, redirect to home
+  if (profileComplete) {
+    return <Navigate to="/" />;
+  }
+  
+  return children;
 };
 
 // Public Route Component (redirects to home if authenticated)
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, profileComplete } = useAuth();
   
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
   
-  return isAuthenticated ? <Navigate to="/" /> : children;
+  if (isAuthenticated) {
+    if (profileComplete) {
+      return <Navigate to="/" />;
+    } else {
+      return <Navigate to="/profile" />;
+    }
+  }
+  
+  return children;
 };
 
 const AppRoutes = () => {
+  const { isAuthenticated, loading, profileComplete } = useAuth();
+
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+
   return (
     <Routes>
       {/* Public Routes */}
@@ -43,7 +87,23 @@ const AppRoutes = () => {
         </PublicRoute>
       } />
       
-      {/* Protected Routes */}
+      {/* Profile Route - only for incomplete profiles */}
+      <Route path="/profile" element={
+        <ProfileRoute>
+          <Profile />
+        </ProfileRoute>
+      } />
+      
+      {/* Profile Edit Route - for authenticated users to edit their profile */}
+      <Route path="/edit-profile" element={
+        <ProtectedRoute>
+          <Layout>
+            <Profile />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      
+      {/* Protected Routes - only for complete profiles */}
       <Route path="/" element={
         <ProtectedRoute>
           <Layout>
@@ -52,18 +112,18 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       
-      <Route path="/profile" element={
-        <ProtectedRoute>
-          <Layout>
-            <Profile />
-          </Layout>
-        </ProtectedRoute>
-      } />
-      
       <Route path="/add-food" element={
         <ProtectedRoute>
           <Layout>
             <AddFood />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/edit-food/:id" element={
+        <ProtectedRoute>
+          <Layout>
+            <EditFood />
           </Layout>
         </ProtectedRoute>
       } />
@@ -92,8 +152,10 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       
-      {/* Catch all route */}
-      <Route path="*" element={<Navigate to="/" />} />
+      {/* Catch all route - redirect to login if not authenticated, otherwise to home */}
+      <Route path="*" element={
+        isAuthenticated ? <Navigate to="/" /> : <Navigate to="/login" />
+      } />
     </Routes>
   );
 };

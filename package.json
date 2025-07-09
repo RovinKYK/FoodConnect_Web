@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.10.0",
     "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.3",
@@ -27,6 +28,7 @@
       "react-app/jest"
     ]
   },
+  "proxy": "http://localhost:5003",
   "browserslist": {
     "production": [
       ">0.2%",

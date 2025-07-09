@@ -40,6 +40,7 @@ const FoodCard = ({ food }) => {
       
       <div className="food-card-content">
         <h3 className="food-type">{food.food_type}</h3>
+        <h4 className="food-name">{food.food_name}</h4>
         
         <div className="food-details">
           <p className="quantity">

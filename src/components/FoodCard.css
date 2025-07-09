@@ -44,6 +44,13 @@
 }
 
 .food-type {
+  margin: 0 0 5px 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.food-name {
   margin: 0 0 15px 0;
   color: #2c3e50;
   font-size: 1.3rem;

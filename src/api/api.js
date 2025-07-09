@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// Use Choreo managed auth: all API calls go through /choreo-apis/
-const API_BASE_URL = '/choreo-apis';
+const API_BASE_URL = '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -10,6 +9,16 @@ const api = axios.create({
   },
 });
 
-// No auth token or manual 401 handling needed
+// Attach JWT token to every request if available
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default api; 

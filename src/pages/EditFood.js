@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api/api';
-import './AddFood.css';
+import './AddFood.css'; // Reuse AddFood styles
 
-const AddFood = () => {
+const EditFood = () => {
   const [formData, setFormData] = useState({
     food_type: '',
-    food_name: '',
     quantity_available: '',
     quantity_unit: 'count',
     prepared_date: '',
@@ -14,12 +13,14 @@ const AddFood = () => {
     description: '',
     image_url: ''
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
 
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const foodTypes = [
     'Fruits',
@@ -33,6 +34,36 @@ const AddFood = () => {
     'Beverages',
     'Other'
   ];
+
+  useEffect(() => {
+    fetchFoodItem();
+  }, [id]);
+
+  const fetchFoodItem = async () => {
+    try {
+      const response = await api.get(`/food/${id}`);
+      const food = response.data.food_item;
+      
+      setFormData({
+        food_type: food.food_type,
+        quantity_available: food.quantity_available.toString(),
+        quantity_unit: food.quantity_unit,
+        prepared_date: food.prepared_date,
+        prepared_time: food.prepared_time,
+        description: food.description || '',
+        image_url: food.image_url || ''
+      });
+      
+      if (food.image_url) {
+        setImagePreview(food.image_url);
+      }
+    } catch (error) {
+      console.error('Fetch food item error:', error);
+      setErrors({ general: 'Failed to load food item' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -115,12 +146,12 @@ const AddFood = () => {
       return;
     }
 
-    setLoading(true);
+    setSaving(true);
 
     try {
-      let imageUrl = '';
+      let imageUrl = formData.image_url;
       
-      // Upload image if selected
+      // Upload new image if selected
       if (imageFile) {
         imageUrl = await uploadImage(imageFile);
       }
@@ -132,13 +163,13 @@ const AddFood = () => {
         ...(imageUrl && { image_url: imageUrl }) // Only include image_url if it has a value
       };
 
-      const response = await api.post('/food', foodData);
+      const response = await api.put(`/food/${id}`, foodData);
       
-      if (response.data.message === 'Food item created successfully') {
-        navigate('/');
+      if (response.data.message === 'Food item updated successfully') {
+        navigate('/my-foods');
       }
     } catch (error) {
-      console.error('Add food error:', error);
+      console.error('Update food error:', error);
       if (error.response?.data?.details) {
         const apiErrors = {};
         error.response.data.details.forEach(detail => {
@@ -146,19 +177,27 @@ const AddFood = () => {
         });
         setErrors(apiErrors);
       } else {
-        setErrors({ general: error.response?.data?.error || 'Failed to add food item' });
+        setErrors({ general: error.response?.data?.error || 'Failed to update food item' });
       }
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="add-food-container">
+        <div className="loading">Loading food item...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="add-food-container">
       <div className="add-food-card">
         <div className="add-food-header">
-          <h1>Add Food Item</h1>
-          <p>Share your food with the community</p>
+          <h1>Edit Food Item</h1>
+          <p>Update your food item details</p>
         </div>
 
         <form onSubmit={handleSubmit} className="add-food-form">
@@ -299,16 +338,16 @@ const AddFood = () => {
             <button 
               type="button" 
               className="cancel-btn"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/my-foods')}
             >
               Cancel
             </button>
             <button 
               type="submit" 
               className="save-btn"
-              disabled={loading}
+              disabled={saving}
             >
-              {loading ? 'Adding...' : 'Add Food'}
+              {saving ? 'Updating...' : 'Update Food'}
             </button>
           </div>
         </form>
@@ -317,4 +356,4 @@ const AddFood = () => {
   );
 };
 
-export default AddFood; 
+export default EditFood; 

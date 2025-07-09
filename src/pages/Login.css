@@ -43,7 +43,7 @@
   margin-bottom: 20px;
 }
 
-.choreo-login-btn {
+.login-btn {
   width: 100%;
   padding: 12px 20px;
   background: #007bff;
@@ -56,13 +56,17 @@
   transition: background-color 0.3s ease;
 }
 
-.choreo-login-btn:hover {
+.login-btn:hover {
   background: #0056b3;
 }
 
-.choreo-login-btn:disabled {
+.login-btn:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+.choreo-login-btn {
+  display: none;
 }
 
 .divider {
@@ -143,7 +147,7 @@
 }
 
 .toggle-auth {
-  margin-top: 30px;
+  margin-top: 20px;
   text-align: center;
 }
 
@@ -157,9 +161,11 @@
   border: none;
   color: #007bff;
   font-weight: 600;
+  margin-left: 8px;
   cursor: pointer;
-  margin-left: 5px;
   text-decoration: underline;
+  font-size: 1rem;
+  padding: 0;
 }
 
 .toggle-btn:hover {
